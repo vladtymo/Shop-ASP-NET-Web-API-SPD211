@@ -1,0 +1,6 @@
+@ShopApi_SPD211_HostAddress = http://localhost:5202
+
+GET {{ShopApi_SPD211_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
