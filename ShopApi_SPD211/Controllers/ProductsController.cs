@@ -28,13 +28,16 @@ namespace ShopApi_SPD211.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok(context.Products.Find(id));
+            var entity = context.Products.Find(id);
+            if (entity == null) return NotFound(); // 404
+
+            return Ok(entity);
         }
 
         [HttpPost]
         public IActionResult Create(Product model)
         {
-            if (!ModelState.IsValid) return NotFound();
+            if (!ModelState.IsValid) return BadRequest();
 
             context.Products.Add(model);
             context.SaveChanges();
@@ -42,8 +45,30 @@ namespace ShopApi_SPD211.Controllers
             return Ok();
         }
 
-        // create
-        // edit
-        // delete
+        [HttpPut]
+        public IActionResult Edit(Product model)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var entity = context.Products.AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
+            if (entity == null) return NotFound();
+
+            context.Products.Update(model);
+            context.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var entity = context.Products.Find(id);
+            if (entity == null) return NotFound();
+
+            context.Products.Remove(entity);
+            context.SaveChanges();
+
+            return Ok();
+        }
     }
 }
